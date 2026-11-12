@@ -1,0 +1,62 @@
+{
+  "scenario": "Lost headphones",
+  "policy": "planner",
+  "seed": 42,
+  "success": true,
+  "time_spent": 7,
+  "discounted_return": 93.0,
+  "searches": 1,
+  "questions": 0,
+  "stop_reason": "found",
+  "steps": [
+    {
+      "number": 1,
+      "action": "search",
+      "target": "Cafeteria",
+      "observation": "found",
+      "duration": 7,
+      "reward": 93,
+      "budget_after": 23,
+      "belief_before": {
+        "Library": 0.4,
+        "Cafeteria": 0.25,
+        "Classroom": 0.15,
+        "Office": 0.1,
+        "Lab": 0.1
+      },
+      "belief_after": {
+        "Library": 0.0,
+        "Cafeteria": 1.0,
+        "Classroom": 0.0,
+        "Office": 0.0,
+        "Lab": 0.0
+      },
+      "route": [
+        [
+          9,
+          0
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          2
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ]
+    }
+  ]
+}

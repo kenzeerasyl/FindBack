@@ -1,0 +1,423 @@
+{
+  "python": "3.12.14",
+  "depth": 3,
+  "first_seed": 1000,
+  "trials_per_policy": 100,
+  "scenario_inputs": {
+    "schema_version": 1,
+    "maps": {
+      "campus": {
+        "rows": [
+          "..........",
+          ".###..###.",
+          "..........",
+          "..##..##..",
+          "..........",
+          ".###..###.",
+          "..........",
+          "..##..##..",
+          "..........",
+          ".........."
+        ],
+        "start": [
+          9,
+          0
+        ],
+        "locations": {
+          "Library": [
+            0,
+            9
+          ],
+          "Cafeteria": [
+            8,
+            4
+          ],
+          "Classroom": [
+            2,
+            2
+          ],
+          "Office": [
+            4,
+            8
+          ],
+          "Lab": [
+            6,
+            1
+          ]
+        }
+      }
+    },
+    "scenarios": [
+      {
+        "id": "baseline",
+        "name": "Lost headphones",
+        "map": "campus",
+        "description": "Fictional campus, stationary item, informative but imperfect reports.",
+        "prior": {
+          "Library": 0.4,
+          "Cafeteria": 0.25,
+          "Classroom": 0.15,
+          "Office": 0.1,
+          "Lab": 0.1
+        },
+        "observations": {
+          "sensitivity": 0.8,
+          "false_positive": 0.1,
+          "detection": 0.85
+        },
+        "costs": {
+          "move": 1,
+          "search": 2,
+          "ask": 1,
+          "reward_found": 100,
+          "time_penalty": 1,
+          "gamma": 0.95
+        },
+        "budget": 30
+      },
+      {
+        "id": "weak_reports",
+        "name": "Unreliable reports",
+        "map": "campus",
+        "description": "A yes report is only slightly more likely at the true location.",
+        "prior": {
+          "Library": 0.4,
+          "Cafeteria": 0.25,
+          "Classroom": 0.15,
+          "Office": 0.1,
+          "Lab": 0.1
+        },
+        "observations": {
+          "sensitivity": 0.6,
+          "false_positive": 0.4,
+          "detection": 0.85
+        },
+        "costs": {
+          "move": 1,
+          "search": 2,
+          "ask": 1,
+          "reward_found": 100,
+          "time_penalty": 1,
+          "gamma": 0.95
+        },
+        "budget": 30
+      },
+      {
+        "id": "urgent",
+        "name": "Ten units left",
+        "map": "campus",
+        "description": "Limited budget prevents a search at distant locations.",
+        "prior": {
+          "Library": 0.4,
+          "Cafeteria": 0.25,
+          "Classroom": 0.15,
+          "Office": 0.1,
+          "Lab": 0.1
+        },
+        "observations": {
+          "sensitivity": 0.8,
+          "false_positive": 0.1,
+          "detection": 0.85
+        },
+        "costs": {
+          "move": 1,
+          "search": 2,
+          "ask": 1,
+          "reward_found": 100,
+          "time_penalty": 1,
+          "gamma": 0.95
+        },
+        "budget": 10
+      },
+      {
+        "id": "isolated_library",
+        "name": "Library unreachable",
+        "map": "campus",
+        "description": "The two entrances to the library cell are closed. The item can still be inside.",
+        "closed_cells": [
+          [
+            0,
+            8
+          ],
+          [
+            1,
+            9
+          ]
+        ],
+        "prior": {
+          "Library": 0.4,
+          "Cafeteria": 0.25,
+          "Classroom": 0.15,
+          "Office": 0.1,
+          "Lab": 0.1
+        },
+        "observations": {
+          "sensitivity": 0.8,
+          "false_positive": 0.1,
+          "detection": 0.85
+        },
+        "costs": {
+          "move": 1,
+          "search": 2,
+          "ask": 1,
+          "reward_found": 100,
+          "time_penalty": 1,
+          "gamma": 0.95
+        },
+        "budget": 30
+      }
+    ]
+  },
+  "summaries": {
+    "baseline": {
+      "planner": {
+        "episodes": 100,
+        "successes": 89,
+        "success_rate": 0.89,
+        "success_ci95_wilson": [
+          0.8136853697209698,
+          0.9374586804477487
+        ],
+        "mean_time_all": 20.36,
+        "mean_time_success_only": 19.382022471910112,
+        "mean_discounted_return": 59.071238891476554,
+        "mean_searches": 2.39,
+        "mean_questions": 1.74
+      },
+      "nearest": {
+        "episodes": 100,
+        "successes": 37,
+        "success_rate": 0.37,
+        "success_ci95_wilson": [
+          0.28182212569509163,
+          0.46779652424866885
+        ],
+        "mean_time_all": 19.74,
+        "mean_time_success_only": 14.18918918918919,
+        "mean_discounted_return": 16.36875,
+        "mean_searches": 2.65,
+        "mean_questions": 0
+      },
+      "highest_belief": {
+        "episodes": 100,
+        "successes": 46,
+        "success_rate": 0.46,
+        "success_ci95_wilson": [
+          0.36560643853331865,
+          0.5573531460647615
+        ],
+        "mean_time_all": 24.27,
+        "mean_time_success_only": 21.065217391304348,
+        "mean_discounted_return": 21.5935,
+        "mean_searches": 1.61,
+        "mean_questions": 0
+      }
+    },
+    "weak_reports": {
+      "planner": {
+        "episodes": 100,
+        "successes": 73,
+        "success_rate": 0.73,
+        "success_ci95_wilson": [
+          0.6356769977376873,
+          0.8073053908233518
+        ],
+        "mean_time_all": 23.55,
+        "mean_time_success_only": 21.164383561643834,
+        "mean_discounted_return": 45.69213,
+        "mean_searches": 2.84,
+        "mean_questions": 0
+      },
+      "nearest": {
+        "episodes": 100,
+        "successes": 37,
+        "success_rate": 0.37,
+        "success_ci95_wilson": [
+          0.28182212569509163,
+          0.46779652424866885
+        ],
+        "mean_time_all": 19.74,
+        "mean_time_success_only": 14.18918918918919,
+        "mean_discounted_return": 16.36875,
+        "mean_searches": 2.65,
+        "mean_questions": 0
+      },
+      "highest_belief": {
+        "episodes": 100,
+        "successes": 46,
+        "success_rate": 0.46,
+        "success_ci95_wilson": [
+          0.36560643853331865,
+          0.5573531460647615
+        ],
+        "mean_time_all": 24.27,
+        "mean_time_success_only": 21.065217391304348,
+        "mean_discounted_return": 21.5935,
+        "mean_searches": 1.61,
+        "mean_questions": 0
+      }
+    },
+    "urgent": {
+      "planner": {
+        "episodes": 100,
+        "successes": 34,
+        "success_rate": 0.34,
+        "success_ci95_wilson": [
+          0.25461379497543,
+          0.43722454341689065
+        ],
+        "mean_time_all": 7.06,
+        "mean_time_success_only": 8.764705882352942,
+        "mean_discounted_return": 24.592741124999996,
+        "mean_searches": 0.81,
+        "mean_questions": 2.69
+      },
+      "nearest": {
+        "episodes": 100,
+        "successes": 8,
+        "success_rate": 0.08,
+        "success_ci95_wilson": [
+          0.04109296948581091,
+          0.14998266879403072
+        ],
+        "mean_time_all": 6,
+        "mean_time_success_only": 6,
+        "mean_discounted_return": 2.0,
+        "mean_searches": 1,
+        "mean_questions": 0
+      },
+      "highest_belief": {
+        "episodes": 100,
+        "successes": 19,
+        "success_rate": 0.19,
+        "success_ci95_wilson": [
+          0.1251465399270426,
+          0.27779024070807856
+        ],
+        "mean_time_all": 7,
+        "mean_time_success_only": 7,
+        "mean_discounted_return": 12.0,
+        "mean_searches": 1,
+        "mean_questions": 0
+      }
+    },
+    "isolated_library": {
+      "planner": {
+        "episodes": 100,
+        "successes": 53,
+        "success_rate": 0.53,
+        "success_ci95_wilson": [
+          0.4328868313724773,
+          0.6248934801789626
+        ],
+        "mean_time_all": 13.54,
+        "mean_time_success_only": 13.264150943396226,
+        "mean_discounted_return": 33.937164077080105,
+        "mean_searches": 1.49,
+        "mean_questions": 4.7
+      },
+      "nearest": {
+        "episodes": 100,
+        "successes": 37,
+        "success_rate": 0.37,
+        "success_ci95_wilson": [
+          0.28182212569509163,
+          0.46779652424866885
+        ],
+        "mean_time_all": 19.74,
+        "mean_time_success_only": 14.18918918918919,
+        "mean_discounted_return": 16.36875,
+        "mean_searches": 2.65,
+        "mean_questions": 0
+      },
+      "highest_belief": {
+        "episodes": 100,
+        "successes": 37,
+        "success_rate": 0.37,
+        "success_ci95_wilson": [
+          0.28182212569509163,
+          0.46779652424866885
+        ],
+        "mean_time_all": 21.49,
+        "mean_time_success_only": 13.81081081081081,
+        "mean_discounted_return": 15.258024999999998,
+        "mean_searches": 2.52,
+        "mean_questions": 0
+      }
+    }
+  },
+  "paired_return_differences": {
+    "baseline": {
+      "nearest": {
+        "mean": 42.702488891476555,
+        "standard_error": 5.320828946679663,
+        "normal_approx_ci95": [
+          32.27366415598442,
+          53.13131362696869
+        ]
+      },
+      "highest_belief": {
+        "mean": 37.477738891476555,
+        "standard_error": 6.092827192051323,
+        "normal_approx_ci95": [
+          25.53579759505596,
+          49.41968018789715
+        ]
+      }
+    },
+    "weak_reports": {
+      "nearest": {
+        "mean": 29.323379999999997,
+        "standard_error": 5.978078453106479,
+        "normal_approx_ci95": [
+          17.6063462319113,
+          41.0404137680887
+        ]
+      },
+      "highest_belief": {
+        "mean": 24.098629999999996,
+        "standard_error": 6.631803017976973,
+        "normal_approx_ci95": [
+          11.100296084765128,
+          37.096963915234866
+        ]
+      }
+    },
+    "urgent": {
+      "nearest": {
+        "mean": 22.592741124999996,
+        "standard_error": 4.261105370450261,
+        "normal_approx_ci95": [
+          14.240974598917484,
+          30.94450765108251
+        ]
+      },
+      "highest_belief": {
+        "mean": 12.592741124999996,
+        "standard_error": 3.2215116731750784,
+        "normal_approx_ci95": [
+          6.278578245576843,
+          18.90690400442315
+        ]
+      }
+    },
+    "isolated_library": {
+      "nearest": {
+        "mean": 17.568414077080106,
+        "standard_error": 3.7259162379383617,
+        "normal_approx_ci95": [
+          10.265618250720918,
+          24.871209903439293
+        ]
+      },
+      "highest_belief": {
+        "mean": 18.67913907708011,
+        "standard_error": 3.80071860482695,
+        "normal_approx_ci95": [
+          11.229730611619287,
+          26.12854754254093
+        ]
+      }
+    }
+  }
+}
