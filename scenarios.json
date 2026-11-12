@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "maps": {
+    "campus": {
+      "rows": ["..........", ".###..###.", "..........", "..##..##..", "..........", ".###..###.", "..........", "..##..##..", "..........", ".........."],
+      "start": [9, 0],
+      "locations": {"Library": [0, 9], "Cafeteria": [8, 4], "Classroom": [2, 2], "Office": [4, 8], "Lab": [6, 1]}
+    }
+  },
+  "scenarios": [
+    {
+      "id": "baseline", "name": "Lost headphones", "map": "campus",
+      "description": "Fictional campus, stationary item, informative but imperfect reports.",
+      "prior": {"Library": 0.4, "Cafeteria": 0.25, "Classroom": 0.15, "Office": 0.1, "Lab": 0.1},
+      "observations": {"sensitivity": 0.8, "false_positive": 0.1, "detection": 0.85},
+      "costs": {"move": 1, "search": 2, "ask": 1, "reward_found": 100, "time_penalty": 1, "gamma": 0.95},
+      "budget": 30
+    },
+    {
+      "id": "weak_reports", "name": "Unreliable reports", "map": "campus",
+      "description": "A yes report is only slightly more likely at the true location.",
+      "prior": {"Library": 0.4, "Cafeteria": 0.25, "Classroom": 0.15, "Office": 0.1, "Lab": 0.1},
+      "observations": {"sensitivity": 0.6, "false_positive": 0.4, "detection": 0.85},
+      "costs": {"move": 1, "search": 2, "ask": 1, "reward_found": 100, "time_penalty": 1, "gamma": 0.95},
+      "budget": 30
+    },
+    {
+      "id": "urgent", "name": "Ten units left", "map": "campus",
+      "description": "Limited budget prevents a search at distant locations.",
+      "prior": {"Library": 0.4, "Cafeteria": 0.25, "Classroom": 0.15, "Office": 0.1, "Lab": 0.1},
+      "observations": {"sensitivity": 0.8, "false_positive": 0.1, "detection": 0.85},
+      "costs": {"move": 1, "search": 2, "ask": 1, "reward_found": 100, "time_penalty": 1, "gamma": 0.95},
+      "budget": 10
+    },
+    {
+      "id": "isolated_library", "name": "Library unreachable", "map": "campus",
+      "description": "The two entrances to the library cell are closed. The item can still be inside.",
+      "closed_cells": [[0, 8], [1, 9]],
+      "prior": {"Library": 0.4, "Cafeteria": 0.25, "Classroom": 0.15, "Office": 0.1, "Lab": 0.1},
+      "observations": {"sensitivity": 0.8, "false_positive": 0.1, "detection": 0.85},
+      "costs": {"move": 1, "search": 2, "ask": 1, "reward_found": 100, "time_penalty": 1, "gamma": 0.95},
+      "budget": 30
+    }
+  ]
+}
