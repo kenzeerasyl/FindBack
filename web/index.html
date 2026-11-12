@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fbfaf6">
+  <title>FindBack · Поиск вещей</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="top-inner">
+      <button class="brand" data-page="search" aria-label="FindBack — текущий поиск"><span class="brand-icon" aria-hidden="true"></span>FindBack</button>
+      <nav aria-label="Разделы" class="nav">
+        <button data-tab="search" aria-current="page">Поиск</button>
+        <button data-tab="saved">Мои поиски<span class="nav-count" id="saved-count"></span></button>
+        <button data-tab="lab">Как это работает</button>
+      </nav>
+      <button class="button dark" id="open-setup"><span aria-hidden="true">+</span> Новый поиск</button>
+    </div>
+  </header>
+  <main>
+    <div id="message" class="notice" role="status" aria-live="polite" hidden></div>
+    <div id="error" class="notice error" role="alert" hidden></div>
+    <section id="search" aria-labelledby="title">
+      <div class="case-head">
+        <div>
+          <p class="context"><span class="status-dot"></span><span id="case-context">Учебный кампус</span></p>
+          <h1 id="title">Поиск вещи</h1>
+          <p class="case-description" id="case-description"></p>
+        </div>
+        <div class="case-status">
+          <span id="status" class="pill">Загрузка…</span>
+          <span id="storage-status" class="storage-status"></span>
+        </div>
+      </div>
+      <div id="workspace" hidden>
+        <div class="workspace">
+          <section class="card map-card" aria-labelledby="map-title">
+            <div class="card-head">
+              <div><h2 id="map-title">Карта кампуса</h2><p>Выбери место, чтобы увидеть маршрут.</p></div>
+              <button class="button plain small" id="edit-map" aria-pressed="false">Настроить проходы</button>
+            </div>
+            <p id="map-help" class="map-help" hidden>Нажми на проход, чтобы закрыть или снова открыть его.</p>
+            <div class="map-stage">
+              <canvas id="map-art" aria-hidden="true"></canvas>
+              <div id="map-pins" aria-label="Места и проходы кампуса"></div>
+              <div class="map-north" aria-hidden="true"><b>↑</b><span>С</span></div>
+              <div class="map-key"><span class="key-dot"></span> Твоя позиция <span class="key-path"></span> Маршрут</div>
+            </div>
+            <div class="map-footer">
+              <div><span class="kicker">ВЫБРАННОЕ МЕСТО</span><h3 id="map-location"></h3><p id="map-caption"></p></div>
+              <button class="button secondary small" id="record-visit">Записать проверку</button>
+            </div>
+          </section>
+          <aside class="sidebar" aria-label="Рекомендация и места поиска">
+            <section class="card recommendation" aria-labelledby="next-title">
+              <div class="next-top"><span class="next-icon" aria-hidden="true">↗</span><h2 id="next-title">Следующий шаг</h2></div>
+              <div id="recommendation"></div>
+              <div id="controls" class="controls">
+                <button class="button mint" id="run-action"></button>
+                <div class="next-links">
+                  <button class="link on-dark" id="add-report">Добавить подсказку</button>
+                  <button class="link on-dark" id="other-action">Другие действия</button>
+                </div>
+              </div>
+              <div class="budget" id="budget-view"></div>
+            </section>
+            <section class="card locations-card" aria-labelledby="belief-title">
+              <div class="card-head"><div><h2 id="belief-title">Где может быть вещь</h2><p>Оценка по собранным подсказкам</p></div></div>
+              <div id="belief"></div>
+            </section>
+          </aside>
+        </div>
+        <section class="card activity" aria-labelledby="history-title">
+          <div class="card-head"><div><h2 id="history-title">История поиска</h2><p>Подсказки, проверки и изменения карты</p></div><button class="button plain small" id="download">Скачать историю</button></div>
+          <div id="history"></div>
+        </section>
+      </div>
+    </section>
+    <section id="saved" hidden aria-labelledby="saved-title">
+      <div class="case-head"><div><h1 id="saved-title">Мои поиски</h1><p class="case-description">Поиски сохраняются в этом браузере. Можно вернуться к любому из них.</p></div></div>
+      <div id="saved-list" class="saved-list"></div>
+    </section>
+    <section id="lab" hidden aria-labelledby="lab-title">
+      <div class="case-head"><div><h1 id="lab-title">Как это работает</h1><p class="case-description">Маршруты, вероятности и результаты учебной симуляции.</p></div></div>
+      <div class="method-grid">
+        <article class="card method"><span class="kicker">BAYES</span><h2>Обновление вероятностей</h2><p>Вероятность каждого места умножается на правдоподобие подсказки. Затем веса делятся на их сумму.</p></article>
+        <article class="card method"><span class="kicker">A*</span><h2>Построение маршрута</h2><p>Алгоритм учитывает уже пройденное расстояние и оценку оставшегося. Закрытые проходы исключаются.</p></article>
+        <article class="card method"><span class="kicker">BELLMAN</span><h2>Выбор действия</h2><p>Программа сравнивает возможные исходы, затраты времени и ценность следующих шагов.</p></article>
+      </div>
+      <div class="lab-grid">
+        <section class="card"><div class="card-head"><div><h2>Оценки действий</h2><p>Для текущего поиска. Выбери действие, чтобы увидеть вклад каждого исхода.</p></div></div><div id="rankings"></div><div id="branches"></div></section>
+        <section class="card"><div class="card-head"><div><h2>Параметры модели</h2><p>Условные значения для учебного кампуса.</p></div></div><div id="assumptions"></div><div class="trace-controls"><label class="check"><input type="checkbox" id="show-expansion"> Показать исследование A* на карте</label><div id="trace-steps" hidden><label id="trace-label" for="trace-range"></label><input type="range" id="trace-range" min="0" value="0"></div></div></section>
+      </div>
+      <section class="card experiment-card">
+        <div class="card-head"><div><h2>Сравнение стратегий</h2><p id="experiment-sample"></p></div><label class="field short">Сценарий<select id="experiment-scenario"></select></label></div>
+        <div id="experiment-bars" class="experiment-bars"></div><div id="experiment-table"></div>
+        <p>Простые стратегии проверяют каждое доступное место один раз. Планировщик может запросить уточнение и повторить проверку. Время включает удачные и неудачные поиски.</p>
+      </section>
+    </section>
+  </main>
+  <footer class="page-footer"><span>FindBack</span><span>Учебная карта кампуса</span></footer>
+
+  <dialog id="setup">
+    <form id="setup-form">
+      <div class="dialog-head"><div><h2>Новый поиск</h2><p>Укажи вещь и места, с которых стоит начать.</p></div><button type="button" class="close" data-close="setup" aria-label="Закрыть">×</button></div>
+      <label class="field">Что потерялось?<input id="item" maxlength="60" placeholder="Например, чёрные наушники" required autofocus></label>
+      <label class="field">Описание <span class="optional">необязательно</span><textarea id="description" maxlength="240" rows="2" placeholder="Цвет, чехол или приметы"></textarea></label>
+      <div class="form-grid">
+        <label class="field">Где ты сейчас?<select id="start-at" aria-label="Где ты сейчас?"></select></label>
+        <label class="field">Где видел вещь в последний раз?<select id="last-seen" aria-label="Где видел вещь в последний раз?"></select></label>
+      </div>
+      <label class="field short">Время на поиск<input id="budget" type="number" min="1" max="60" value="30" required><small>Условные единицы времени</small></label>
+      <details class="advanced"><summary>Настройки симуляции</summary>
+        <div class="form-grid">
+          <label class="field">Режим<select id="mode" aria-label="Режим"><option value="manual">Ручной поиск</option><option value="simulation">Симуляция</option></select></label>
+          <label class="field">Сценарий<select id="scenario" aria-label="Сценарий"></select></label>
+          <label class="field">Глубина планирования<select id="depth"><option>1</option><option>2</option><option selected>3</option><option>4</option></select></label>
+          <label class="field" id="seed-field" hidden>Seed<input id="seed" type="number" min="0" max="2147483647" value="42" required></label>
+        </div>
+      </details>
+      <p class="form-error" role="alert"></p>
+      <div class="dialog-actions"><button type="button" class="button plain" id="open-example">Открыть пример</button><button type="submit" class="button dark">Начать поиск</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="action-dialog">
+    <form id="action-form">
+      <div class="dialog-head"><h2 id="action-title">Записать результат</h2><button type="button" class="close" data-close="action-dialog" aria-label="Закрыть">×</button></div>
+      <label class="field" id="action-field">Действие<select id="action-select" aria-label="Действие"></select></label>
+      <p id="action-detail"></p>
+      <label class="field" id="outcome-field">Что получилось?<select id="outcome" aria-label="Что получилось?"></select></label>
+      <p class="form-error" role="alert"></p><button class="button dark" type="submit" id="apply-action">Сохранить результат</button>
+    </form>
+  </dialog>
+
+  <dialog id="report-dialog">
+    <form id="report-form">
+      <div class="dialog-head"><div><h2>Добавить подсказку</h2><p>Уже полученная подсказка обновит оценки мест.</p></div><button type="button" class="close" data-close="report-dialog" aria-label="Закрыть">×</button></div>
+      <label class="field">О каком месте речь?<select id="report-target" aria-label="О каком месте речь?"></select></label>
+      <label class="field">Что стало известно?<select id="report-outcome" aria-label="Что стало известно?"><option value="yes">Вещь могли видеть здесь</option><option value="no">Вещь здесь не видели</option></select></label>
+      <label class="field">Заметка <span class="optional">необязательно</span><textarea id="report-note" maxlength="240" rows="2" placeholder="Например, похожий чехол видели на стойке"></textarea></label>
+      <details class="advanced"><summary>Идентификатор подсказки</summary><label class="field">ID подсказки<input id="report-id" maxlength="60" placeholder="Создаётся автоматически"></label></details>
+      <p class="form-error" role="alert"></p><button class="button dark" type="submit">Сохранить подсказку</button>
+    </form>
+  </dialog>
+</body>
+</html>
